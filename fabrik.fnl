@@ -30,17 +30,18 @@
 ;; Thing
 
 (local max-steps 3)
-(local thing [])
-(local max-distance 22)
+(var thing nil)
 
-(fn init-thing []
+(fn create-thing [n-points max-distance]
   (let [(width height) (love.graphics.getDimensions)
-        tmp [[(/ width 2) (/ height 2)]]]
-    (for [i 1 4]
-      (let [[x y] (. tmp i)]
+        tmp [[(/ width 2) (/ height 2)]]
+        thing []]
+    (for [i 2 (+ n-points 1)]
+      (let [[x y] (. tmp (- i 1))]
         (table.insert tmp [(+ x (* i max-distance)) y])))
     (for [i (length tmp) 1 -1]
-      (table.insert thing (. tmp i)))))
+      (table.insert thing (. tmp i)))
+    thing))
 
 (fn solve-thing [thing target]
   (let [len (length thing)
@@ -101,11 +102,11 @@ Forward and Backward Reaching Inverse Kinematics" 10 10))
 
 (local window-width 512)
 (local window-height 448)
-(local window-flags {:resizable false :vsync false :minwidth 256 :minheight 224})
+(local window-flags {:resizable false :vsync true :minwidth 256 :minheight 224})
 
 (fn love.load []
   (love.window.setTitle "LÖVE FABRIK")
   (love.window.setMode window-width window-height window-flags)
   (love.mouse.setVisible false)
   (love.graphics.setBackgroundColor [0.168 0.188 0.231])
-  (init-thing))
+  (set thing (create-thing 5 10)))
