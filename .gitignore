@@ -1,0 +1,3 @@
+*.lua
+!fennel.lua
+!main.lua
