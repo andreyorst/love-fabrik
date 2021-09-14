@@ -30,11 +30,11 @@
 ;; Thing
 
 (local max-steps 3)
-(var thing nil)
+(local things [])
 
-(fn create-thing [n-points max-distance]
+(fn create-thing [n-points max-distance origin]
   (let [(width height) (love.graphics.getDimensions)
-        tmp [[(/ width 2) (/ height 2)]]
+        tmp [(or origin [(/ width 2) (/ height 2)])]
         thing []]
     (for [i 2 (+ n-points 1)]
       (let [[x y] (. tmp (- i 1))]
@@ -88,6 +88,7 @@
   (love.graphics.circle :fill a b 8))
 
 (fn draw-descr []
+  (love.graphics.setColor [0.396 0.450 0.494])
   (love.graphics.print "F.A.B.R.I.K.
 Forward and Backward Reaching Inverse Kinematics" 10 10))
 
@@ -95,8 +96,9 @@ Forward and Backward Reaching Inverse Kinematics" 10 10))
   (let [mouse-pos (vec2 (love.mouse.getPosition))]
     (draw-descr)
     (draw-cursor mouse-pos)
-    (solve-thing thing mouse-pos)
-    (draw-thing thing)))
+    (each [_ thing (ipairs things)]
+      (solve-thing thing mouse-pos)
+      (draw-thing thing))))
 
 ;; Init
 
@@ -109,4 +111,8 @@ Forward and Backward Reaching Inverse Kinematics" 10 10))
   (love.window.setMode window-width window-height window-flags)
   (love.mouse.setVisible false)
   (love.graphics.setBackgroundColor [0.168 0.188 0.231])
-  (set thing (create-thing 5 10)))
+  (table.insert things (create-thing 4 15))
+  ;; (each [_ x (ipairs [100 200 300 400])]
+  ;;   (each [_ y (ipairs [100 200 300 400])]
+  ;;     (table.insert things (create-thing 4 10 [x y]))))
+  )
